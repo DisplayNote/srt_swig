@@ -11,7 +11,7 @@ image:
 
 platform:
   - x64
-#  - x86
+  - x86
 
 build_script:
   # prep shared variables
