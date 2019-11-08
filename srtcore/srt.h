@@ -64,6 +64,29 @@ written by
    #define SRT_API __attribute__ ((visibility("default")))
 #endif
 
+#ifdef SWIG
+   /*
+   To automatically generate bindings via SWIG (http://www.swig.org)
+   Install swig via the following (or use Windows instructions from the link above):
+      sudo apt install swig    
+   Generate the bindings using:
+      mkdir srtcore/bindings/csharp -p
+      swig -c++ -v -csharp -namespace srtsharp -outdir ./srtcore/bindings/csharp/ ./srtcore/srt.h
+   Create a .Net Standard class library with:
+      cd srtcore/bindings/csharp
+      dotnet new classlib -n srtsharp
+   You can now reference the srtsharp lib in your .Net Core projects.  Ensure the srtlib.so (or srt.dll) is in the binary path of your .NetCore project.
+   */
+   %module srt
+   %{
+   // BUG: The generated file SRT_ERRNO.cs has errors, it does not prefix the referenced enums from CodeMajor.cs and CodeMinor.cs
+   // BUG: The generated code has no namespace.
+   #include "srt.h"
+   %}
+   // Remove SRT_API definition when using SWIG
+   #undef SRT_API
+   #define SRT_API
+#endif
 
 // For feature tests if you need.
 // You can use these constants with SRTO_MINVERSION option.
