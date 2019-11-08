@@ -74,11 +74,32 @@ written by
       swig -v -csharp -namespace srtsharp -outdir ./srtcore/bindings/csharp/ ./srtcore/srt.h
    You can now reference the srtsharp lib in your .Net Core projects.  Ensure the srtlib.so (or srt.dll) is in the binary path of your .NetCore project.
    */
+   %include <typemaps.i>
+
    %module srt
    %{
    #include "srt.h"
+   SRT_API       int srt_connect      (SRTSOCKET u, const struct sockaddr* name, int namelen);
    %}
    
+   %pragma(csharp) moduleimports=%{ 
+   using System;
+   using System.Runtime.InteropServices;
+   
+   /// <summary>
+   /// sockaddr_in layout in C#.
+   /// </summary>
+   [StructLayout(LayoutKind.Sequential)]
+   public struct sockaddr_in
+   {
+      public short sin_family;
+      public ushort sin_port;
+      public uint sin_addr;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+      public byte[] sin_zero;
+   };
+   %}
+
    //enums in C# are int by default, this override pushes this enum to the require uint format
    %typemap(csbase) SRT_EPOLL_OPT "uint"
    
@@ -88,7 +109,18 @@ written by
       using static CodeMajor;
       using static CodeMinor;
 
-      %}
+   %}
+
+   //%typemap(ctype) SWIGTYPE "void *"
+   //%typemap(imtype, out="global::System.IntPtr") SWIGTYPE "global::System.Runtime.InteropServices.HandleRef"
+   //%typemap(cstype) SWIGTYPE "$&csclassname"
+
+
+   %typemap(ctype) SWIGTYPE "const struct sockaddr*"
+   %typemap(imtype, out="global::System.IntPtr") SWIGTYPE "global::System.Runtime.InteropServices.HandleRef"
+   %typemap(cstype) const struct sockaddr* "sockaddr_in"
+   
+   //%typemap(cstype) global::System.Runtime.InteropServices.HandleRef     "int"
    
 
    // Remove SRT_API definition when using SWIG
