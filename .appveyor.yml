@@ -18,9 +18,14 @@ build_script:
   - ps: if ( $Env:PLATFORM -eq 'x86' ) { $DEVENV_PLATFORM = 'Win32' } else { $DEVENV_PLATFORM = 'x64' }
   - ps: if ( $Env:PLATFORM -eq 'x86' ) { $FOLDER_PLATFORM = 'win32' } else { $FOLDER_PLATFORM = 'win64' }
   - ps: if ( $Env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2013' ) { $VS_VERSION='2013' } else { $VS_VERSION='2015' }
-  - ps: $env:VS_VERSION = $VS_VERSION
+  - ps: $env:VS_VERSION = $VS_VERSION  
+  # update nuget
+  - ps: nuget update -self
   # get pthreads
   - ps: nuget install cinegy.pthreads-$FOLDER_PLATFORM-$VS_VERSION -version 2.9.1.24
+  # get swig, for adding c-sharp binding to SRT
+  - ps: nuget install swigwintools -version 4.0.0
+  - ps: ./packages/swigwintools.4.0.0/tools/swigwin-4.0.0/swig -c++ -v -csharp -outdir ./srtcore/bindings/csharp/ ./srtcore/srt.h
   # build SRT
   - ps: if ( $VS_VERSION -eq '2013' -and $Env:PLATFORM -eq 'x86' ) { $CMAKE_GENERATOR = 'Visual Studio 12 2013' }
   - ps: if ( $VS_VERSION -eq '2013' -and $Env:PLATFORM -eq 'x64' ) { $CMAKE_GENERATOR = 'Visual Studio 12 2013 Win64' }

@@ -20,6 +20,7 @@ congctl.cpp
 srt_c_api.cpp
 window.cpp
 srt_compat.c
+srt_wrap.c
 
 PUBLIC HEADERS
 srt.h
