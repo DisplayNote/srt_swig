@@ -56,6 +56,17 @@ public struct sockaddr_in
 
 /// Rebind objects from the default mappings for types and objects that are optimized for C#
 
+//enums in C# are int by default, this override pushes this enum to the require uint format
+%typemap(csbase) SRT_EPOLL_OPT "uint"
+
+//the SRT_ERRNO enum references itself another enum - we must import this other enum into the class file for resolution
+%typemap(csimports) SRT_ERRNO %{
+
+   using static CodeMajor;
+   using static CodeMinor;
+
+%}
+
 ///
 /// General interface definition of wrapper - pull in some constants and methods.
 /// Hopefully will see if instead it is possible to just re-include srt.h rather than import each element
