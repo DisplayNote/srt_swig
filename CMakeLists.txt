@@ -962,6 +962,12 @@ endif()
 if(MICROSOFT)
 	cmake_policy(SET CMP0078 NEW)
 	cmake_policy(SET CMP0086 NEW)
+
+	#if nuget has been used to install swig in the project packages, bind to that
+	if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/swigwintools.4.0.0/tools/swigwin-4.0.0/swig.exe")
+		set(SWIG_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/packages/swigwintools.4.0.0/tools/swigwin-4.0.0/swig.exe")
+	endif()
+
 	FIND_PACKAGE(SWIG REQUIRED)
 	INCLUDE(${SWIG_USE_FILE})
 
