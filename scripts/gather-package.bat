@@ -15,7 +15,7 @@ md %APPVEYOR_BUILD_FOLDER%\package\include
 md %APPVEYOR_BUILD_FOLDER%\package\include\win
 md %APPVEYOR_BUILD_FOLDER%\package\bin        
 md %APPVEYOR_BUILD_FOLDER%\package\lib
-md %APPVEYOR_BUILD_FOLDER%\package\srtcore\bindings
+md %APPVEYOR_BUILD_FOLDER%\package\swig_bindings
 md %APPVEYOR_BUILD_FOLDER%\package\openssl-win%FOLDER_PLATFORM%
 
 rem Gather SRT includes, binaries and libs
@@ -32,7 +32,7 @@ IF "%CONFIGURATION%"=="Debug" (
 )
 
 rem gather any generated bindings for languages
-(robocopy %APPVEYOR_BUILD_FOLDER%\srtcore\bindings\ %APPVEYOR_BUILD_FOLDER%\package\srtcore\bindings /s /e /np) ^& IF %ERRORLEVEL% GTR 1 exit %ERRORLEVEL%
+(robocopy %APPVEYOR_BUILD_FOLDER%\swig_bindings\ %APPVEYOR_BUILD_FOLDER%\package\swig_bindings /s /e /np) ^& IF %ERRORLEVEL% GTR 1 exit %ERRORLEVEL%
 
 rem gather 3rd party openssl elements
 (robocopy c:\openssl-win%FOLDER_PLATFORM%\ %APPVEYOR_BUILD_FOLDER%\package\openssl-win%FOLDER_PLATFORM% /s /e /np) ^& IF %ERRORLEVEL% GTR 1 exit %ERRORLEVEL%
