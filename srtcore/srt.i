@@ -83,4 +83,4 @@ SRTSOCKET srt_socket (int af, int type, int protocol);
 int srt_connect (SRTSOCKET u, const struct sockaddr* name, int namelen);
 int srt_recvmsg (SRTSOCKET u, char* buf, int len);
 */
-%include "./srtcore/srt.h";
+%include "srt.h";

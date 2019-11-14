@@ -958,6 +958,17 @@ if (ENABLE_EXAMPLES)
 
 endif()
 
+#experimental SWIG support for csharp - only enabled for Windows currently
+if(MICROSOFT)
+	cmake_policy(SET CMP0078 NEW)
+	cmake_policy(SET CMP0086 NEW)
+	FIND_PACKAGE(SWIG REQUIRED)
+	INCLUDE(${SWIG_USE_FILE})
+
+	swig_add_library(srt_swig_netcore LANGUAGE csharp SOURCES srtcore/srt.i OUTPUT_DIR swig_bindings/csharp)
+	swig_link_libraries(srt_swig_netcore ${srt_link_library})
+	
+endif()
 
 if (ENABLE_UNITTESTS AND ENABLE_CXX11)
 	set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
