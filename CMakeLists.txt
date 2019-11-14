@@ -960,8 +960,12 @@ endif()
 
 #experimental SWIG support for csharp - only enabled for Windows currently
 if(MICROSOFT)
-	cmake_policy(SET CMP0078 NEW)
-	cmake_policy(SET CMP0086 NEW)
+	
+	#older cmakes do not understand these policies - this affects VS2013 appveyor build image, for example
+	if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.15)
+		cmake_policy(SET CMP0078 NEW)
+		cmake_policy(SET CMP0086 NEW)
+	endif()
 
 	#if nuget has been used to install swig in the project packages, bind to that
 	if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/swigwintools.4.0.0/tools/swigwin-4.0.0/swig.exe")
