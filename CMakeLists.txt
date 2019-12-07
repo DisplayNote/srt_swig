@@ -962,7 +962,7 @@ endif()
 if(MICROSOFT)
 	
 	#older cmakes do not understand these policies - this affects VS2013 appveyor build image, for example
-	if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.15)
+	if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.14)
 		cmake_policy(SET CMP0078 NEW)
 		cmake_policy(SET CMP0086 NEW)
 	endif()
@@ -976,7 +976,7 @@ if(MICROSOFT)
 	INCLUDE(${SWIG_USE_FILE})
 
 	swig_add_library(srt_swig_netcore LANGUAGE csharp SOURCES srtcore/srt.i OUTPUT_DIR swig_bindings/csharp)
-	swig_link_libraries(srt_swig_netcore ${srt_link_library})
+	swig_link_libraries(srt_swig_netcore ${srt_link_library} ${DEPENDS_srt})
 	
 endif()
 
