@@ -39,3 +39,5 @@ _*/
 
 # Nuget packages
 packages/
+package/
+*.nupkg
