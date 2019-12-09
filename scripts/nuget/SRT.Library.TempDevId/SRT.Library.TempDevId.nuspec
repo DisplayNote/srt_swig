@@ -13,7 +13,7 @@
 	</metadata>
 
 	<files>
-		<file src="..\..\..\package\bin\srt_swig_netcore.dll" target="runtimes\win-x64\native\release"/>
+		<file src="..\..\..\package\bin\srt_swig_csharp.dll" target="runtimes\win-x64\native\release"/>
 		
 		<!-- <file src="..\..\package\srtbinding.interop.dll" target="runtimes\any\netstandard2.0" /> commented while it does not exist -->
 
