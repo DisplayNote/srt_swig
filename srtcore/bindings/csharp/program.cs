@@ -1,8 +1,8 @@
 using System;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Security.Permissions;
-using SrtSharp;
+//using System.Net;
+//using System.Runtime.InteropServices;
+//using System.Security.Permissions;
+//using SrtSharp;
 
 namespace srtapp
 {
@@ -17,7 +17,7 @@ namespace srtapp
         static void Main(string[] args)
         {
             Console.WriteLine("Connecting to srt://88.198.225.93:9000");
-            
+  /*          
             var startup = srt.srt_startup();
 
             Console.WriteLine($"Startup: {startup}");
@@ -68,7 +68,7 @@ namespace srtapp
                     Console.Write(".");
                 }
             }
-             
+    */         
         }
     }
 }
