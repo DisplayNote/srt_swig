@@ -10,7 +10,7 @@
 
 /*****************************************************************************
 written by
-   Cinegy GmbH
+   Lewis Kirkaldie - Cinegy GmbH
  *****************************************************************************/
 
 /*
@@ -66,6 +66,9 @@ public struct sockaddr_in
    using static CodeMinor;
 
 %}
+
+SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
+SWIG_CSBODY_TYPEWRAPPER(public, public, public, SWIGTYPE)
 
 ///
 /// General interface definition of wrapper - pull in some constants and methods.
