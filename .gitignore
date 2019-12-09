@@ -41,3 +41,6 @@ _*/
 packages/
 package/
 *.nupkg
+
+# Swig bindings
+/srtcore/swig_bindings
