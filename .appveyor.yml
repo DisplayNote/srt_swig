@@ -41,6 +41,7 @@ test_script:
   - ps: if ( $VS_VERSION -eq '2015' ) { ctest --extra-verbose -C $Env:CONFIGURATION }
   
 after_build:
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%
   - cmd: scripts/gather-package.bat
   - cmd: scripts/create-win64-nuget.bat
   - cmd: 7z a SRT-%APPVEYOR_REPO_BRANCH%-%CONFIGURATION%-Win%PLATFORM%-%VS_VERSION%-%APPVEYOR_BUILD_VERSION%.zip %APPVEYOR_BUILD_FOLDER%\package\*
