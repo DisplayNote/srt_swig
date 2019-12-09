@@ -35,6 +35,8 @@ build_script:
   - ps: cmake -G"$CMAKE_GENERATOR" -DCMAKE_BUILD_TYPE=$Env:CONFIGURATION -DENABLE_UNITTESTS="$ENABLE_UNITTESTS" ../
   - ps: ../scripts/set-version-metadata.ps1
   - ps: cmake --build ./ --config $Env:CONFIGURATION
+  # build SRTSharp with NetCore (not possible by cmake currently) - netcore not installed on vs2013 image 
+  - ps: if ( $VS_VERSION -eq '2015' ) { cd %APPVEYOR_BUILD_FOLDER%/srtcore/swig_bindings/csharp; dotnet build -c Release }
     
 test_script:
   - ps: if ( $ENABLE_UNITTESTS ) { cd _build; ctest --extra-verbose -C $Env:CONFIGURATION ../ }

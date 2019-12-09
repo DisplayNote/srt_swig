@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package >
 	<metadata>
-		<id>SRT.Library.TempDevId</id>
-		<title>SRT Library</title>
+		<id>SrtSharp</id>
+		<title>SRT Library wrapped for C#</title>
 		<version>$version$-beta</version>
 		<authors>Cinegy GmbH</authors>
 		<owners>Cinegy GmbH</owners>
@@ -15,11 +15,11 @@
 	<files>
 		<file src="..\..\..\package\bin\srt_swig_csharp.dll" target="runtimes\win-x64\native\release"/>
 		
-		<!-- <file src="..\..\package\srtbinding.interop.dll" target="runtimes\any\netstandard2.0" /> commented while it does not exist -->
+		<file src="..\..\..\package\swig_bindings\csharp\**\srtsharp.*" target="runtimes\any\netstandard2.0" /> 
 
 		<file src="..\..\..\package\include\**\*.*" target="sources"/>
 
-		<file src="..\..\..\package\swig_bindings\**\*.*" target="bindings"/>
+		<file src="..\..\..\package\swig_bindings\**\*.*" target="bindings" exclude="**\*.dll"/>
 
 		<file src="build\*" target="build" />
 	</files>
