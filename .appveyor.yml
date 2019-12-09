@@ -6,12 +6,12 @@ configuration:
   - Debug
 
 image:
-#  - Visual Studio 2013
+  - Visual Studio 2013
   - Visual Studio 2015
 
 platform:
   - x64
-#  - x86
+  - x86
 
 build_script:
   # prep shared variables

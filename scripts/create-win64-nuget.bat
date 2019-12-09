@@ -6,12 +6,15 @@ IF DEFINED APPVEYOR_BUILD_VERSION (
     IF "%PLATFORM%"=="x64" (
         IF "%VS_VERSION%"=="2015" (
             IF "%CONFIGURATION%"=="Release" (
+                echo "Building NuPkg for this build (VS2015, x64 Release)"
                 nuget pack .\scripts\nuget\SrtSharp\SrtSharp.nuspec -version %APPVEYOR_BUILD_VERSION%-beta
-                appveyor PushArtifact SRT.Library.TempDevId.%APPVEYOR_BUILD_VERSION%.nupkg
+                appveyor PushArtifact SrtSharp.%APPVEYOR_BUILD_VERSION%.nupkg
                 exit 0
             )
         )
-    ) 
+    )
+    echo "Skipping NuPkg build (not VS2015, x64 Release)"
+    exit 0
 ) ELSE (
     rem probably running on a local workstation, so use the first given argument parameter as the version number and don't push or exit
     nuget pack .\scripts\nuget\SrtSharp\SrtSharp.nuspec -version %1
