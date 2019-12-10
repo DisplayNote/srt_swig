@@ -8,8 +8,4 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-<ItemGroup>
-  <Content Include="../../../_build/Release/srt_swig_csharp.*" CopyToOutputDirectory="PreserveNewest" />
-</ItemGroup>
-
 </Project>
