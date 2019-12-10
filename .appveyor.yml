@@ -39,7 +39,7 @@ build_script:
   - ps: if ( $VS_VERSION -eq '2015' ) { cd $Env:APPVEYOR_BUILD_FOLDER/srtcore/swig_bindings/csharp; dotnet build -c Release }
     
 test_script:
-  - ps: if ( $ENABLE_UNITTESTS ) { cd _build; ctest --extra-verbose -C $Env:CONFIGURATION ../ }
+  - ps: if ( $ENABLE_UNITTESTS -eq 'ON' ) { cd _build; ctest --extra-verbose -C $Env:CONFIGURATION ../ }
   
 after_build:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%
