@@ -1,8 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -10,7 +9,7 @@
   </PropertyGroup>
 
 <ItemGroup>
-  <Content Include="../../../_build/Release/srt_swig_csharp.*"  CopyToOutputDirectory="PreserveNewest" />
+  <Content Include="../../../_build/Release/srt_swig_csharp.*" CopyToOutputDirectory="PreserveNewest" />
 </ItemGroup>
 
 </Project>
