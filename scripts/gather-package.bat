@@ -21,7 +21,7 @@ IF "%GATHER_SSL_INTO_PACKAGE%"=="True" (
 md %APPVEYOR_BUILD_FOLDER%\package\swig_bindings
 
 rem Gather SRT includes, binaries and libs
-copy %APPVEYOR_BUILD_FOLDER%\version.h %APPVEYOR_BUILD_FOLDER%\package\include\
+copy %APPVEYOR_BUILD_FOLDER%\_build\version.h %APPVEYOR_BUILD_FOLDER%\package\include\
 copy %APPVEYOR_BUILD_FOLDER%\srtcore\*.h %APPVEYOR_BUILD_FOLDER%\package\include\
 copy %APPVEYOR_BUILD_FOLDER%\haicrypt\*.h %APPVEYOR_BUILD_FOLDER%\package\include\
 copy %APPVEYOR_BUILD_FOLDER%\common\*.h %APPVEYOR_BUILD_FOLDER%\package\include\
