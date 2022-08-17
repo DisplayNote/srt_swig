@@ -39,3 +39,10 @@ _*/
 
 # Nuget packages
 packages/
+.vscode/
+
+# Ignore vcpkg submodule
+vcpkg/
+
+# LSP
+compile_commands.json
