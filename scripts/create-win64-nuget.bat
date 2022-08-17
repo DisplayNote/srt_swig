@@ -7,8 +7,8 @@ IF DEFINED APPVEYOR_BUILD_VERSION (
         IF "%VS_VERSION%"=="2015" (
             IF "%CONFIGURATION%"=="Release" (
                 echo "Building NuPkg for this build (VS2015, x64 Release)"
-                nuget pack .\scripts\nuget\SrtSharp\SrtSharp.nuspec -version %APPVEYOR_BUILD_VERSION%-beta
-                appveyor PushArtifact SrtSharp.VS2015-%APPVEYOR_BUILD_VERSION%-beta.nupkg
+                nuget pack .\scripts\nuget\SrtSharp\SrtSharp.nuspec -version %APPVEYOR_BUILD_VERSION%-2015-beta
+                appveyor PushArtifact SrtSharp.%APPVEYOR_BUILD_VERSION%-2015-beta.nupkg
                 exit 0
             )
         )        
@@ -16,7 +16,7 @@ IF DEFINED APPVEYOR_BUILD_VERSION (
             IF "%CONFIGURATION%"=="Release" (
                 echo "Building NuPkg for this build (VS2019, x64 Release)"
                 nuget pack .\scripts\nuget\SrtSharp\SrtSharp.nuspec -version %APPVEYOR_BUILD_VERSION%-beta
-                appveyor PushArtifact SrtSharp.VS2019-%APPVEYOR_BUILD_VERSION%-beta.nupkg
+                appveyor PushArtifact SrtSharp.%APPVEYOR_BUILD_VERSION%-beta.nupkg
                 exit 0
             )
         )
