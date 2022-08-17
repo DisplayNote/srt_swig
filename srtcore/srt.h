@@ -63,6 +63,11 @@ written by
    #define SRT_API __attribute__ ((visibility("default")))
 #endif
 
+#ifdef SWIG
+   // Remove SRT_API definition when using SWIG
+   #undef SRT_API
+   #define SRT_API
+#endif
 
 // For feature tests if you need.
 // You can use these constants with SRTO_MINVERSION option.

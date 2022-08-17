@@ -1280,6 +1280,28 @@ endif()
 	srt_add_example(testcapi-connect.c)
 endif()
 
+#SWIG support - adding bindings for other languages into a new library that statically include the main SRT lib
+#older cmakes do not understand these policies - this affects VS2013 appveyor build image, for example
+if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.14)
+	cmake_policy(SET CMP0078 NEW)
+	cmake_policy(SET CMP0086 NEW)
+endif()
+
+#experimental SWIG support for csharp - only enabled for Windows currently
+if(MICROSOFT)
+	#if nuget has been used to install swig in the project packages, bind to that
+	if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/swigwintools.4.0.0/tools/swigwin-4.0.0/swig.exe")
+		set(SWIG_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/packages/swigwintools.4.0.0/tools/swigwin-4.0.0/swig.exe")
+	endif()
+
+endif()
+
+FIND_PACKAGE(SWIG REQUIRED)
+INCLUDE(${SWIG_USE_FILE})
+
+swig_add_library(srt_swig_csharp LANGUAGE csharp SOURCES srtcore/srt.i OUTPUT_DIR ${SRT_SRC_SRTCORE_DIR}/swig_bindings/csharp)
+swig_link_libraries(srt_swig_csharp ${srt_link_library} ${DEPENDS_srt})
+set_property(TARGET srt_swig_csharp PROPERTY SWIG_COMPILE_OPTIONS -namespace SrtSharp)
 
 if (ENABLE_UNITTESTS AND ENABLE_CXX11)
 
