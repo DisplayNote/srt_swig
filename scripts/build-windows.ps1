@@ -37,7 +37,6 @@ if ( $Env:APPVEYOR ) {
     if ( $Env:PLATFORM -eq 'x86' ) { $DEVENV_PLATFORM = 'Win32' } else { $DEVENV_PLATFORM = 'x64' }
     if ( $Env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2019' ) { $VS_VERSION='2019' }
     if ( $Env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2015' ) { $VS_VERSION='2015' }
-    if ( $Env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2013' ) { $VS_VERSION='2013' }
 
     #if not statically linking OpenSSL, set flag to gather the specific openssl package from the build server into package
     if ( $STATIC_LINK_SSL -eq 'OFF' ) { $Env:GATHER_SSL_INTO_PACKAGE = $true }
@@ -47,13 +46,11 @@ if ( $Env:APPVEYOR ) {
     
     $CONFIGURATION = $Env:CONFIGURATION
 
-    #appveyor has many openssl installations - place the latest one in the default location unless VS2013
-    if( $VS_VERSION -ne '2013' ) {
-        Remove-Item -Path "C:\OpenSSL-Win32" -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
-        Remove-Item -Path "C:\OpenSSL-Win64" -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
-        Copy-Item -Path "C:\OpenSSL-v111-Win32" "C:\OpenSSL-Win32" -Recurse | Out-Null
-        Copy-Item -Path "C:\OpenSSL-v111-Win64" "C:\OpenSSL-Win64" -Recurse | Out-Null
-    }
+    #appveyor has many openssl installations - place the latest v111 edition in the default location
+    Remove-Item -Path "C:\OpenSSL-Win32" -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
+    Remove-Item -Path "C:\OpenSSL-Win64" -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
+    Copy-Item -Path "C:\OpenSSL-v111-Win32" "C:\OpenSSL-Win32" -Recurse | Out-Null
+    Copy-Item -Path "C:\OpenSSL-v111-Win64" "C:\OpenSSL-Win64" -Recurse | Out-Null
 }
 
 # persist VS_VERSION so it can be used in an artifact name later
@@ -63,8 +60,6 @@ $Env:VS_VERSION = $VS_VERSION
 if ( $VS_VERSION -eq '2019' ) { $CMAKE_GENERATOR = 'Visual Studio 16 2019'; $MSBUILDVER = "16.0"; }
 if ( $VS_VERSION -eq '2015' -and $DEVENV_PLATFORM -eq 'Win32' ) { $CMAKE_GENERATOR = 'Visual Studio 14 2015'; $MSBUILDVER = "14.0"; }
 if ( $VS_VERSION -eq '2015' -and $DEVENV_PLATFORM -eq 'x64' ) { $CMAKE_GENERATOR = 'Visual Studio 14 2015 Win64'; $MSBUILDVER = "14.0"; }
-if ( $VS_VERSION -eq '2013' -and $DEVENV_PLATFORM -eq 'Win32' ) { $CMAKE_GENERATOR = 'Visual Studio 12 2013'; $MSBUILDVER = "12.0"; }
-if ( $VS_VERSION -eq '2013' -and $DEVENV_PLATFORM -eq 'x64' ) { $CMAKE_GENERATOR = 'Visual Studio 12 2013 Win64'; $MSBUILDVER = "12.0"; }
 
 # clear any previous build and create & enter the build directory
 $buildDir = Join-Path "$projectRoot" "$BUILD_DIR"

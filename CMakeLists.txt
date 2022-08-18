@@ -1281,12 +1281,10 @@ endif()
 endif()
 
 #SWIG support - adding bindings for other languages into a new library that statically include the main SRT lib
-#older cmakes do not understand these policies - this affects VS2013 appveyor build image, for example
-if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.14)
-	cmake_policy(SET CMP0078 NEW)
-	cmake_policy(SET CMP0086 NEW)
-endif()
+cmake_policy(SET CMP0078 NEW)
+cmake_policy(SET CMP0086 NEW)
 
+#older cmakes do not understand this policy, so filter (VS2015 AppVeyor cmake is too old)
 if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.21)
 	cmake_policy(SET CMP0122 NEW)
 endif()

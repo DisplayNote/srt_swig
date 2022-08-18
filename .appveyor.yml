@@ -5,7 +5,6 @@ configuration:
 image:
   - Visual Studio 2019
   - Visual Studio 2015
-  - Visual Studio 2013
 
 platform:
   - x64
@@ -22,10 +21,8 @@ build_script:
   - ps: if ($VSIMG -match '2019' -and $CNFG -eq "Debug")   { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS ON }
   - ps: if ($VSIMG -match '2015' -and $CNFG -eq "Release") { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS ON -UNIT_TESTS ON }
   - ps: if ($VSIMG -match '2015' -and $CNFG -eq "Debug")   { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS OFF }
-  - ps: if ($VSIMG -match '2013' -and $CNFG -eq "Release") { .\scripts\build-windows.ps1 -CXX11 OFF -BUILD_APPS ON }
-  - ps: if ($VSIMG -match '2013' -and $CNFG -eq "Debug")   { Exit-AppveyorBuild } # just skip 2013 debug build for speed
-  # build SRTSharp with NetCore (not possible by cmake currently) - netcore not installed on vs2013 image 
-  - ps: if ( $VS_VERSION -ne '2013' ) { cd $Env:APPVEYOR_BUILD_FOLDER/srtcore/swig_bindings/csharp; dotnet build -c Release }
+  # build SRTSharp with NetCore (not possible by cmake currently)
+  - ps: cd $Env:APPVEYOR_BUILD_FOLDER/srtcore/swig_bindings/csharp; dotnet build -c Release
 
 test_script:
   - ps: if ( $Env:RUN_UNIT_TESTS ) { cd ./_build; ctest -E "TestIPv6.v6_calls_v4" --extra-verbose -C $Env:CONFIGURATION; cd ../ }
