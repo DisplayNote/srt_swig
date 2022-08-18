@@ -20,7 +20,7 @@ Install swig via the following (or use instructions from the link above):
 Generate the bindings using:
    mkdir srtcore/bindings/csharp -p
    swig -v -csharp -namespace SrtSharp -outdir ./srtcore/bindings/csharp/ ./srtcore/srt.i
-You can now reference the SrtSharp lib in your .Net Core projects.  Ensure the srtlib.so (or srt.dll) is in the binary path of your .NetCore project.
+You can now reference the SrtSharp lib in your .Net Core projects.  Ensure the srtlib.so (or srt.dll / srt_swig_csharp.dll) is in the binary path of your .NetCore project.
 */
 
 %module srt
@@ -70,20 +70,10 @@ public struct sockaddr_in
 SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
 SWIG_CSBODY_TYPEWRAPPER(public, public, public, SWIGTYPE)
 
-///
-/// General interface definition of wrapper - pull in some constants and methods.
-/// Hopefully will see if instead it is possible to just re-include srt.h rather than import each element
-/// 
+%typemap(ctype) SWIGTYPE "const struct sockaddr*"
+%typemap(imtype, out="global::System.IntPtr") SWIGTYPE "global::System.Runtime.InteropServices.HandleRef"
+%typemap(cstype) const struct sockaddr* "SWIGTYPE_p_sockaddr"
 
-/*
-static const SRTSOCKET SRT_INVALID_SOCK = -1;
-static const int SRT_ERROR = -1;
+// General interface definition of wrapper - due to above typemaps and code, we can now just reference the main srt.h file
 
-int srt_startup(void);
-
-SRTSOCKET srt_socket (int af, int type, int protocol);
- 
-int srt_connect (SRTSOCKET u, const struct sockaddr* name, int namelen);
-int srt_recvmsg (SRTSOCKET u, char* buf, int len);
-*/
 %include "srt.h";
