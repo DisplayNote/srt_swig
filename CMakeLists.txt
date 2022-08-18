@@ -1285,6 +1285,7 @@ endif()
 if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.14)
 	cmake_policy(SET CMP0078 NEW)
 	cmake_policy(SET CMP0086 NEW)
+	cmake_policy(SET CMP0122 NEW)
 endif()
 
 #experimental SWIG support for csharp - only enabled for Windows currently

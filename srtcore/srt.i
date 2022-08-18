@@ -41,6 +41,7 @@ You can now reference the SrtSharp lib in your .Net Core projects.  Ensure the s
 
 %pragma(csharp) moduleimports=%{ 
 using System;
+using System.Net;
 using System.Runtime.InteropServices;
 
 // sockaddr_in layout in C# - for easier creation of socket object from C# code
@@ -52,6 +53,30 @@ public struct sockaddr_in
    public uint sin_addr;
    public long sin_zero;
 };
+
+public static class SocketHelper{
+   public static SWIGTYPE_p_sockaddr CreateSocketAddress(string address, int port){
+            var destination = IPAddress.Parse(address);
+            
+      var sin = new sockaddr_in()
+      {
+         sin_family = srt.AF_INET,
+         sin_port = (ushort)IPAddress.HostToNetworkOrder((short)port),
+#pragma warning disable 618
+         sin_addr = (uint)destination.Address,
+#pragma warning restore 618
+         sin_zero = 0
+      };
+
+      var hnd = GCHandle.Alloc(sin, GCHandleType.Pinned);
+      
+      var socketAddress = new SWIGTYPE_p_sockaddr(hnd.AddrOfPinnedObject(), false);
+      
+      hnd.Free();
+
+      return socketAddress;
+   }
+}
 %}
 
 /// Rebind objects from the default mappings for types and objects that are optimized for C#
@@ -75,5 +100,8 @@ SWIG_CSBODY_TYPEWRAPPER(public, public, public, SWIGTYPE)
 %typemap(cstype) const struct sockaddr* "SWIGTYPE_p_sockaddr"
 
 // General interface definition of wrapper - due to above typemaps and code, we can now just reference the main srt.h file
+
+const short AF_INET = 2;
+
 
 %include "srt.h";
