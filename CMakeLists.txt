@@ -1297,14 +1297,14 @@ if(MICROSOFT)
 		set(SWIG_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.0.2/swig.exe")
 	endif()
 
+	FIND_PACKAGE(SWIG REQUIRED)
+	INCLUDE(${SWIG_USE_FILE})
+	
+	swig_add_library(srt_swig_csharp LANGUAGE csharp SOURCES srtcore/srt.i OUTPUT_DIR ${SRT_SRC_SRTCORE_DIR}/swig_bindings/csharp)
+	swig_link_libraries(srt_swig_csharp ${srt_link_library} ${DEPENDS_srt})
+	set_property(TARGET srt_swig_csharp PROPERTY SWIG_COMPILE_OPTIONS -namespace SrtSharp)
 endif()
 
-FIND_PACKAGE(SWIG REQUIRED)
-INCLUDE(${SWIG_USE_FILE})
-
-swig_add_library(srt_swig_csharp LANGUAGE csharp SOURCES srtcore/srt.i OUTPUT_DIR ${SRT_SRC_SRTCORE_DIR}/swig_bindings/csharp)
-swig_link_libraries(srt_swig_csharp ${srt_link_library} ${DEPENDS_srt})
-set_property(TARGET srt_swig_csharp PROPERTY SWIG_COMPILE_OPTIONS -namespace SrtSharp)
 
 if (ENABLE_UNITTESTS AND ENABLE_CXX11)
 
