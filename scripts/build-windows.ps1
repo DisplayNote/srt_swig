@@ -233,6 +233,13 @@ if ( $null -eq $msBuildPath ) {
 
 & $msBuildPath SRT.sln -m /p:Configuration=$CONFIGURATION /p:Platform=$DEVENV_PLATFORM
 
+# if CSharp SWIG is on, now trigger compilation of these elements (cmake for dotnet is very new, and not available in older versions)
+if($ENABLE_SWIG_CSHARP){
+    Push-Location $PSScriptRoot/srtcore/swig_bindings/csharp
+    & dotnet build -c Release
+    Pop-Location
+}
+
 # return to the directory previously occupied before running the script
 Pop-Location
 
