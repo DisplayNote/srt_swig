@@ -15,7 +15,10 @@ build_script:
   # update nuget
   - ps: nuget update -self
   # get swig, for adding alternative language binding to SRT
-  - ps: nuget install swigwintools -version 4.0.0
+  - ps: iwr 'https://deac-fra.dl.sourceforge.net/project/swig/swigwin/swigwin-4.0.2/swigwin-4.0.2.zip' -OutFile swig.zip
+  - ps: Expand-Archive swig.zip -DestinationPath packages/swig
+  - ps: Remove-Item swig.zip
+  # - ps: nuget install swigwintools -version 4.0.0
   # use a few differing arguments depending on VS version to exercise different options during builds
   - ps: if ($VSIMG -match '2019' -and $CNFG -eq "Release") { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS ON -UNIT_TESTS ON }
   - ps: if ($VSIMG -match '2019' -and $CNFG -eq "Debug")   { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS ON }

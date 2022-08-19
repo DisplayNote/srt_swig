@@ -1293,8 +1293,8 @@ endif()
 #experimental SWIG support for csharp - only enabled for Windows currently
 if(MICROSOFT)
 	#if nuget has been used to install swig in the project packages, bind to that
-	if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/swigwintools.4.0.0/tools/swigwin-4.0.0/swig.exe")
-		set(SWIG_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/packages/swigwintools.4.0.0/tools/swigwin-4.0.0/swig.exe")
+	if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.0.2/swig.exe")
+		set(SWIG_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.0.2/swig.exe")
 	endif()
 
 endif()
