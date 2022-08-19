@@ -1299,7 +1299,8 @@ if(ENABLE_SWIG)
 		if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.0.2/swig.exe")
 			set(SWIG_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.0.2/swig.exe")
 		endif()
-
+	endif()
+	
 	FIND_PACKAGE(SWIG REQUIRED)
 	INCLUDE(${SWIG_USE_FILE})
 
@@ -1309,6 +1310,7 @@ if(ENABLE_SWIG)
 		set_property(TARGET srt_swig_csharp PROPERTY SWIG_COMPILE_OPTIONS -namespace SrtSharp)
 	endif()
 endif()
+
 if (ENABLE_UNITTESTS AND ENABLE_CXX11)
 
 	if (${CMAKE_VERSION} VERSION_LESS "3.10.0") 
