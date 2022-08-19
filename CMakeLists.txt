@@ -154,6 +154,8 @@ option(USE_GNUSTL "Get c++ library/headers from the gnustl.pc" OFF)
 option(ENABLE_SOCK_CLOEXEC "Enable setting SOCK_CLOEXEC on a socket" ON)
 option(ENABLE_SHOW_PROJECT_CONFIG "Enable show Project Configuration" OFF)
 option(ENABLE_NEW_RCVBUFFER "Enable new receiver buffer implementation" ON)
+option(ENABLE_SWIG "Enable SWIG, used to generate alternative language bindings" OFF)
+option(ENABLE_SWIG_CSHARP "Enable SWIG binding generation for CSharp language (only effective if ENABLE_SWIG is ON)" ON)
 
 option(ENABLE_CLANG_TSA "Enable Clang Thread Safety Analysis" OFF)
 
@@ -1291,21 +1293,22 @@ endif()
 
 
 #experimental SWIG support for csharp - only enabled for Windows currently
-if(MICROSOFT)
-	#if nuget has been used to install swig in the project packages, bind to that
-	if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.0.2/swig.exe")
-		set(SWIG_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.0.2/swig.exe")
-	endif()
+if(ENABLE_SWIG)
+	if(MICROSOFT)
+		#if nuget has been used to install swig in the project packages, bind to that
+		if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.0.2/swig.exe")
+			set(SWIG_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.0.2/swig.exe")
+		endif()
 
 	FIND_PACKAGE(SWIG REQUIRED)
 	INCLUDE(${SWIG_USE_FILE})
-	
-	swig_add_library(srt_swig_csharp LANGUAGE csharp SOURCES srtcore/srt.i OUTPUT_DIR ${SRT_SRC_SRTCORE_DIR}/swig_bindings/csharp)
-	swig_link_libraries(srt_swig_csharp ${srt_link_library} ${DEPENDS_srt})
-	set_property(TARGET srt_swig_csharp PROPERTY SWIG_COMPILE_OPTIONS -namespace SrtSharp)
+
+	if(ENABLE_SWIG_CSHARP)
+		swig_add_library(srt_swig_csharp LANGUAGE csharp SOURCES srtcore/srt.i OUTPUT_DIR ${SRT_SRC_SRTCORE_DIR}/swig_bindings/csharp)
+		swig_link_libraries(srt_swig_csharp ${srt_link_library} ${DEPENDS_srt})
+		set_property(TARGET srt_swig_csharp PROPERTY SWIG_COMPILE_OPTIONS -namespace SrtSharp)
+	endif()
 endif()
-
-
 if (ENABLE_UNITTESTS AND ENABLE_CXX11)
 
 	if (${CMAKE_VERSION} VERSION_LESS "3.10.0") 
