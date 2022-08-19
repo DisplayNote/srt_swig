@@ -131,7 +131,7 @@ if ( $VCPKG_OPENSSL -eq "ON" ) {
 # check to see if SWIG is marked to be used - if so, download swig into packages folder so cmake can find it
 if ( $ENABLE_SWIG -eq "ON" ) {
     Invoke-WebRequest 'https://deac-fra.dl.sourceforge.net/project/swig/swigwin/swigwin-4.0.2/swigwin-4.0.2.zip' -OutFile swig.zip
-    Expand-Archive swig.zip -DestinationPath packages/swig
+    Expand-Archive swig.zip -DestinationPath $projectRoot/packages/swig
     Remove-Item swig.zip
 }
 
