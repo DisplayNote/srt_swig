@@ -19,7 +19,9 @@ param (
     [Parameter()][String]$BUILD_APPS = "ON",
     [Parameter()][String]$UNIT_TESTS = "OFF",
     [Parameter()][String]$BUILD_DIR = "_build",
-    [Parameter()][String]$VCPKG_OPENSSL = "OFF"
+    [Parameter()][String]$VCPKG_OPENSSL = "OFF",
+    [Parameter()][String]$ENABLE_SWIG = "OFF",
+    [Parameter()][String]$ENABLE_SWIG_CSHARP = "ON"
 )
 
 # cmake can be optionally installed (useful when running interactively on a developer station).
@@ -126,12 +128,22 @@ if ( $VCPKG_OPENSSL -eq "ON" ) {
     }
 }
 
+# check to see if SWIG is marked to be used - if so, download swig into packages folder so cmake can find it
+if ( $ENABLE_SWIG -eq "ON" ) {
+{
+    Invoke-WebRequest 'https://deac-fra.dl.sourceforge.net/project/swig/swigwin/swigwin-4.0.2/swigwin-4.0.2.zip' -OutFile swig.zip
+    Expand-Archive swig.zip -DestinationPath packages/swig
+    Remove-Item swig.zip
+}
+
 # build the cmake command flags from arguments
 $cmakeFlags = "-DCMAKE_BUILD_TYPE=$CONFIGURATION " + 
                 "-DENABLE_STDCXX_SYNC=$CXX11 " + 
                 "-DENABLE_APPS=$BUILD_APPS " + 
                 "-DENABLE_ENCRYPTION=$ENABLE_ENCRYPTION " +
-                "-DENABLE_UNITTESTS=$UNIT_TESTS"
+                "-DENABLE_UNITTESTS=$UNIT_TESTS " +
+                "-DENABLE_SWIG=$ENABLE_SWIG " +
+                "-DENABLE_SWIG_CSHARP=$ENABLE_SWIG_CSHARP"
 
 # if VCPKG is flagged to provide OpenSSL, checkout VCPKG and install package
 if ( $VCPKG_OPENSSL -eq 'ON' ) {    
