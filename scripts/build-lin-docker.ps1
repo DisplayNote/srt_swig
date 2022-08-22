@@ -42,8 +42,6 @@ $cmakeFlags = "-DCMAKE_BUILD_TYPE=$CONFIGURATION " +
                 "-DENABLE_SWIG=$ENABLE_SWIG " +
                 "-DENABLE_SWIG_CSHARP=$ENABLE_SWIG_CSHARP"
 
-cmake ../ -DENABLE_STDCXX_SYNC=ON -DENABLE_UNITTESTS=ON -DENABLE_EXPERIMENTAL_BONDING=ON
-
 # generate command for docker run of cmake generation step
 $execVar = "docker run --rm -v $($projectRoot):/srt -w /srt/$BUILD_DIR srtbuildcontainer:latest cmake -S ../ $cmakeFlags"
 Write-Output $execVar
