@@ -24,8 +24,10 @@ param (
 
 $projectRoot = Join-Path $PSScriptRoot "/.." -Resolve
 
-# make sure an up-to-date docker container (for compiling within) is built
-docker build -t srtbuildcontainer:latest -f Dockerfile.linux .
+# generate command to make sure an up-to-date docker container (for compiling within) is built
+$execVar = "docker build -t srtbuildcontainer:latest -f $($projectRoot)/scripts/Dockerfile.linux ."
+Write-Output $execVar
+Invoke-Expression "& $execVar"
 
 # clear any previous build and create & enter the build directory
 $buildDir = Join-Path "$projectRoot" "$BUILD_DIR"
