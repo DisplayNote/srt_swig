@@ -18,8 +18,7 @@ build_script:
   - ps: if ($VSIMG -match '2019' -and $CNFG -eq "Debug")   { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS ON -ENABLE_SWIG ON}
   - ps: if ($VSIMG -match '2015' -and $CNFG -eq "Release") { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS ON -UNIT_TESTS ON }
   - ps: if ($VSIMG -match '2015' -and $CNFG -eq "Debug")   { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS OFF }
-  - sh: docker build -t srtbuildcontainer:latest -f ./scripts/Dockerfile.linux .
-  - sh: docker run --rm -v /home/appveyor/projects/:/data/dev srtbuildcontainer:latest sh -c "cd /data/dev/srt/scripts && ./build-linux.sh"
+  - sh: ./scripts/build-lin-docker.ps1
 
 test_script:
   - ps: if ( $Env:RUN_UNIT_TESTS ) { cd ./_build; ctest -E "TestIPv6.v6_calls_v4" --extra-verbose -C $Env:CONFIGURATION; cd ../ }
