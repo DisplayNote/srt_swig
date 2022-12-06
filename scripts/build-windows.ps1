@@ -243,7 +243,7 @@ if ( $null -eq $msBuildPath ) {
 & $msBuildPath SRT.sln -m /p:Configuration=$CONFIGURATION /p:Platform=$DEVENV_PLATFORM
 
 # if CSharp SWIG is on, now trigger compilation of these elements (cmake for dotnet is very new, and not available in older versions)
-if($ENABLE_SWIG_CSHARP){
+if($ENABLE_SWIG -and $ENABLE_SWIG_CSHARP){
     Push-Location "$buildDir/swig_bindings/csharp"
     Copy-Item "$projectRoot/srtcore/swig_bindings/csharp/*.csproj" .
     & dotnet build -c $CONFIGURATION
