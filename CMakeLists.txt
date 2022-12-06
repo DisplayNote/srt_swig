@@ -1305,7 +1305,7 @@ if(ENABLE_SWIG)
 	INCLUDE(${SWIG_USE_FILE})
 
 	if(ENABLE_SWIG_CSHARP)
-		swig_add_library(srt_swig_csharp LANGUAGE csharp SOURCES srtcore/srt.i OUTPUT_DIR ${SRT_SRC_SRTCORE_DIR}/swig_bindings/csharp)
+		swig_add_library(srt_swig_csharp LANGUAGE csharp SOURCES srtcore/srt.i OUTPUT_DIR ${CMAKE_BINARY_DIR}/swig_bindings/csharp)
 		swig_link_libraries(srt_swig_csharp ${srt_link_library} ${DEPENDS_srt})
 		set_property(TARGET srt_swig_csharp PROPERTY SWIG_COMPILE_OPTIONS -namespace SrtSharp)
 	endif()

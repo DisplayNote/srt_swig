@@ -242,8 +242,10 @@ if ( $null -eq $msBuildPath ) {
 
 # if CSharp SWIG is on, now trigger compilation of these elements (cmake for dotnet is very new, and not available in older versions)
 if($ENABLE_SWIG_CSHARP){
-    Push-Location $projectRoot/srtcore/swig_bindings/csharp
-    & dotnet build -c Release
+    Push-Location "$buildDir/swig_bindings/csharp"
+    Copy-Item "$projectRoot/srtcore/swig_bindings/csharp/*.csproj" .
+    & dotnet build -c $CONFIGURATION
+    Copy-Item "bin/$CONFIGURATION/netstandard2.0/*.dll" "$buildDir/$CONFIGURATION"
     Pop-Location
 }
 
