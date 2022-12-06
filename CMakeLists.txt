@@ -1296,8 +1296,8 @@ endif()
 if(ENABLE_SWIG)
 	if(MICROSOFT)
 		#if nuget has been used to install swig in the project packages, bind to that
-		if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.0.2/swig.exe")
-			set(SWIG_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.0.2/swig.exe")
+		if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.1.1/swig.exe")
+			set(SWIG_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/packages/swig/swigwin-4.1.1/swig.exe")
 		endif()
 	endif()
 	
