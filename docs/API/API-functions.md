@@ -1734,7 +1734,7 @@ delivered to the receiving application (in microseconds since SRT clock epoch).
   - [IN] Sender only. Specifies the application-provided timestamp to be associated
 with the packet. If not provided (specified as 0), the current time of 
 SRT internal clock is used.
-  - For details on how to use `srctime` please refer to the (Time Access)[#time-access] section.
+  - For details on how to use `srctime` please refer to the [Time Access](#time-access) section.
 
 - `pktseq`: Receiver only. Reports the sequence number for the packet carrying
 out the payload being returned. If the payload is carried out by more than one
@@ -2189,7 +2189,7 @@ as level-triggered, you can do two separate subscriptions for the same socket.
 
 **IMPORTANT**: The [`srt_epoll_wait`](#srt_epoll_wait) function does not report
 [`SRT_EPOLL_UPDATE`](#SRT_EPOLL_UPDATE) events. If you need the ability to get 
-any possible flag, you must use [`srt_epoll_wait`](#srt_epoll_wait). Note that 
+any possible flag, you must use [`srt_epoll_uwait`](#srt_epoll_uwait). Note that 
 this function doesn't work with system file descriptors.
 
 |      Returns                  |                                                           |

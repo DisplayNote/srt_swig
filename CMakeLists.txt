@@ -8,20 +8,20 @@
 #
 
 cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
-set (SRT_VERSION 1.5.0)
+set (SRT_VERSION 1.5.1)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
 include(haiUtil) # needed for set_version_variables
 # CMake version 3.0 introduced the VERSION option of the project() command
 # to specify a project version as well as the name.
 if(${CMAKE_VERSION} VERSION_LESS "3.0.0")
-  project(SRT C CXX)
-  # Sets SRT_VERSION_MAJOR, SRT_VERSION_MINOR, SRT_VERSION_PATCH
-  set_version_variables(SRT_VERSION ${SRT_VERSION})
+	project(SRT C CXX)
+	# Sets SRT_VERSION_MAJOR, SRT_VERSION_MINOR, SRT_VERSION_PATCH
+	set_version_variables(SRT_VERSION ${SRT_VERSION})
 else()
-  cmake_policy(SET CMP0048 NEW)
-  # Also sets SRT_VERSION_MAJOR, SRT_VERSION_MINOR, SRT_VERSION_PATCH
-  project(SRT VERSION ${SRT_VERSION} LANGUAGES C CXX)
+	cmake_policy(SET CMP0048 NEW)
+	# Also sets SRT_VERSION_MAJOR, SRT_VERSION_MINOR, SRT_VERSION_PATCH
+	project(SRT VERSION ${SRT_VERSION} LANGUAGES C CXX)
 endif()
 
 include(FindPkgConfig)
@@ -43,15 +43,9 @@ set_if(ANDROID     ${SYSNAME_LC} MATCHES "android")
 set_if(SUNOS       "${SYSNAME_LC}" MATCHES "sunos")
 set_if(POSIX       LINUX OR DARWIN OR BSD OR SUNOS OR ANDROID OR (CYGWIN AND CYGWIN_USE_POSIX))
 set_if(SYMLINKABLE LINUX OR DARWIN OR BSD OR SUNOS OR CYGWIN OR GNU)
+set_if(NEED_DESTINATION  ${CMAKE_VERSION} VERSION_LESS "3.14.0")
 
-# Not sure what to do in case of compiling by MSVC.
-# This will make installdir in C:\Program Files\SRT then
-# inside "bin" and "lib64" directories. At least this maintains
-# the current status. Shall this be not desired, override values
-# of CMAKE_INSTALL_BINDIR, CMAKE_INSTALL_LIBDIR and CMAKE_INSTALL_INCLUDEDIR.
-if (NOT DEFINED CMAKE_INSTALL_LIBDIR)
-	include(GNUInstallDirs)
-endif()
+include(GNUInstallDirs)
 
 # The CMAKE_BUILD_TYPE seems not to be always set, weird.
 if (NOT DEFINED ENABLE_DEBUG)
@@ -63,15 +57,28 @@ if (NOT DEFINED ENABLE_DEBUG)
 	endif()
 endif()
 
-# Set CMAKE_BUILD_TYPE properly, now that you know
-# that ENABLE_DEBUG is set as it should.
+# XXX This is a kind of workaround - this part to set the build
+# type and associated other flags should not be done for build
+# systems (cmake generators) that generate a multi-configuration
+# build definition. At least it is known that MSVC does it and it
+# sets _DEBUG and NDEBUG flags itself, so this shouldn't be done
+# at all in this case.
+if (NOT MICROSOFT)
 
-if (ENABLE_DEBUG EQUAL 2)
-	set (CMAKE_BUILD_TYPE "RelWithDebInfo")
-elseif (ENABLE_DEBUG) # 1, ON, YES, TRUE, Y, or any other non-zero number
-	set (CMAKE_BUILD_TYPE "Debug")
-else()
-	set (CMAKE_BUILD_TYPE "Release")
+	# Set CMAKE_BUILD_TYPE properly, now that you know
+	# that ENABLE_DEBUG is set as it should.
+	if (ENABLE_DEBUG EQUAL 2)
+		set (CMAKE_BUILD_TYPE "RelWithDebInfo")
+		add_definitions(-DNDEBUG)
+	elseif (ENABLE_DEBUG) # 1, ON, YES, TRUE, Y, or any other non-zero number
+		set (CMAKE_BUILD_TYPE "Debug")
+
+		# Add _DEBUG macro in debug mode only, to enable SRT_ASSERT().
+		add_definitions(-D_DEBUG)
+	else()
+		set (CMAKE_BUILD_TYPE "Release")
+		add_definitions(-DNDEBUG)
+	endif()
 endif()
 
 message(STATUS "BUILD TYPE: ${CMAKE_BUILD_TYPE}")
@@ -341,8 +348,9 @@ if (ENABLE_ENCRYPTION)
 				set(SRT_LIBS_PRIVATE ${SRT_LIBS_PRIVATE} "-l${LIB}")
 			endif()
 		endforeach()
-	else() # openssl
-		add_definitions(-DUSE_OPENSSL=1)
+	elseif ("${USE_ENCLIB}" STREQUAL "openssl-evp")
+		# Openssl-EVP requires CRYSPR2
+		add_definitions(-DUSE_OPENSSL_EVP=1 -DCRYSPR2)
 		set (SSL_REQUIRED_MODULES "openssl libcrypto")
 		# Try using pkg-config method first if enabled,
 		# fall back to find_package method otherwise
@@ -352,6 +360,39 @@ if (ENABLE_ENCRYPTION)
 				# use `pkg-config --static xxx` found libs
 				set(SSL_LIBRARIES ${SSL_STATIC_LIBRARIES})
 			endif()
+		endif()
+		if (SSL_FOUND)
+			# We have some cases when pkg-config is improperly configured
+			# When it doesn't ship the -L and -I options, and the CMAKE_PREFIX_PATH
+			# is set (also through `configure`), then we have this problem. If so,
+			# set forcefully the -I and -L contents to prefix/include and
+			# prefix/lib.
+			if ("${SSL_LIBRARY_DIRS}" STREQUAL "")
+			if (NOT "${CMAKE_PREFIX_PATH}" STREQUAL "")
+				message(STATUS "WARNING: pkg-config has incorrect prefix - enforcing target path prefix: ${CMAKE_PREFIX_PATH}")
+				set (SSL_LIBRARY_DIRS ${CMAKE_PREFIX_PATH}/${CMAKE_INSTALL_LIBDIR})
+				set (SSL_INCLUDE_DIRS ${CMAKE_PREFIX_PATH}/include)
+			endif()
+			endif()
+
+			link_directories(
+				${SSL_LIBRARY_DIRS}
+			)
+			message(STATUS "SSL via pkg-config: -L ${SSL_LIBRARY_DIRS} -I ${SSL_INCLUDE_DIRS} -l;${SSL_LIBRARIES}")
+		else()
+			find_package(OpenSSL REQUIRED)
+			set (SSL_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR})
+			set (SSL_LIBRARIES ${OPENSSL_LIBRARIES})
+			message(STATUS "SSL via find_package(OpenSSL): -I ${SSL_INCLUDE_DIRS} -l;${SSL_LIBRARIES}")
+		endif()
+	else() # openssl
+		# Openssl (Direct-AES API) can use CRYSPR2
+		add_definitions(-DUSE_OPENSSL=1 -DCRYSPR2)
+			set (SSL_REQUIRED_MODULES "openssl libcrypto")
+		# Try using pkg-config method first if enabled,
+		# fall back to find_package method otherwise
+		if (USE_OPENSSL_PC)
+			pkg_check_modules(SSL ${SSL_REQUIRED_MODULES})
 		endif()
 		if (SSL_FOUND)
 			# We have some cases when pkg-config is improperly configured
@@ -1035,15 +1076,29 @@ if (CYGWIN)
 endif()
 
 message(STATUS "INSTALL DIRS: bin=${CMAKE_INSTALL_BINDIR} lib=${CMAKE_INSTALL_LIBDIR} shlib=${INSTALL_SHARED_DIR} include=${CMAKE_INSTALL_INCLUDEDIR}")
-
-install(TARGETS ${INSTALL_TARGETS}
-		RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+if (NEED_DESTINATION)
+	if (DEFINED CMAKE_INSTALL_BINDIR AND DEFINED CMAKE_INSTALL_LIBDIR AND NOT INSTALL_SHARED_DIR STREQUAL "")
+		install(TARGETS ${INSTALL_TARGETS}
+			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+			ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+			LIBRARY DESTINATION ${INSTALL_SHARED_DIR}
+		)
+	else()
+		message(WARNING "No location to install ${INSTALL_TARGETS}")
+	endif()
+elseif (NOT INSTALL_SHARED_DIR STREQUAL "")
+	install(TARGETS ${INSTALL_TARGETS}
 		LIBRARY DESTINATION ${INSTALL_SHARED_DIR}
-)
-install(FILES ${HEADERS_srt} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/srt)
-if (WIN32)
-	install(FILES ${HEADERS_srt_win32} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/srt/win)
+	)
+else()
+	install(TARGETS ${INSTALL_TARGETS})
+endif()
+
+if (DEFINED CMAKE_INSTALL_INCLUDEDIR)
+	install(FILES ${HEADERS_srt} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/srt)
+	if (WIN32)
+		install(FILES ${HEADERS_srt_win32} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/srt/win)
+	endif()
 endif()
 
 # ---
@@ -1079,11 +1134,13 @@ endif()
 
 join_arguments(SRT_LIBS_PRIVATE ${SRT_LIBS_PRIVATE})
 
-# haisrt.pc left temporarily for backward compatibility. To be removed in future!
-configure_file(scripts/srt.pc.in haisrt.pc @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/haisrt.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-configure_file(scripts/srt.pc.in srt.pc @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/srt.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+if (DEFINED CMAKE_INSTALL_LIBDIR)
+	# haisrt.pc left temporarily for backward compatibility. To be removed in future!
+	configure_file(scripts/srt.pc.in haisrt.pc @ONLY)
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/haisrt.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+	configure_file(scripts/srt.pc.in srt.pc @ONLY)
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/srt.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+endif()
 
 # Applications
 
@@ -1109,7 +1166,13 @@ endmacro()
 
 macro(srt_add_program name)
 	srt_add_program_dont_install(${name} ${ARGN})
-	install(TARGETS ${name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+	if(NOT NEED_DESTINATION)
+		install(TARGETS ${name} RUNTIME)
+	elseif (DEFINED CMAKE_INSTALL_BINDIR)
+		install(TARGETS ${name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+	else()
+		message(WARNING "No location to install program ${name}")
+	endif()
 endmacro()
 
 macro(srt_make_application name)
@@ -1148,7 +1211,13 @@ endmacro()
 macro(srt_add_application name) # ARGN=sources...
 	srt_add_program(${name} apps/${name}.cpp ${ARGN})
 	srt_make_application(${name})
-	install(TARGETS ${name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+	if(NOT NEED_DESTINATION)
+		install(TARGETS ${name} RUNTIME)
+	elseif (DEFINED CMAKE_INSTALL_BINDIR)
+		install(TARGETS ${name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+	else()
+		message(WARNING "No location to install program ${name}")
+	endif()
 endmacro()
 
 ## FIXME: transmitmedia.cpp does not build on OpenBSD
@@ -1369,7 +1438,13 @@ if (ENABLE_UNITTESTS AND ENABLE_CXX11)
 endif()
 
 
-install(PROGRAMS scripts/srt-ffplay DESTINATION ${CMAKE_INSTALL_BINDIR})
+if(NOT NEED_DESTINATION)
+	install(PROGRAMS scripts/srt-ffplay TYPE BIN)
+elseif (DEFINED CMAKE_INSTALL_BINDIR)
+	install(PROGRAMS scripts/srt-ffplay DESTINATION ${CMAKE_INSTALL_BINDIR})
+else()
+	message(WARNING "No location to install scripts/srt-ffplay")
+endif()
 
 
 if (DEFINED SRT_EXTRA_APPS_INC)

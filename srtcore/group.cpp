@@ -780,16 +780,6 @@ void CUDTGroup::getOpt(SRT_SOCKOPT optname, void* pw_optval, int& w_optlen)
     return ps->core().getOpt(optname, (pw_optval), (w_optlen));
 }
 
-struct HaveState : public unary_function<pair<SRTSOCKET, SRT_SOCKSTATUS>, bool>
-{
-    SRT_SOCKSTATUS s;
-    HaveState(SRT_SOCKSTATUS ss)
-        : s(ss)
-    {
-    }
-    bool operator()(pair<SRTSOCKET, SRT_SOCKSTATUS> i) const { return i.second == s; }
-};
-
 SRT_SOCKSTATUS CUDTGroup::getStatus()
 {
     typedef vector<pair<SRTSOCKET, SRT_SOCKSTATUS> > states_t;
@@ -979,7 +969,7 @@ void CUDTGroup::close()
     // XXX This looks like a dead code. Group receiver functions
     // do not use any lock on m_RcvDataLock, it is likely a remainder
     // of the old, internal impementation. 
-    // CSync::lock_signal(m_RcvDataCond, m_RcvDataLock);
+    // CSync::lock_notify_one(m_RcvDataCond, m_RcvDataLock);
 }
 
 // [[using locked(m_Global->m_GlobControlLock)]]
@@ -1517,8 +1507,6 @@ int CUDTGroup::sendBroadcast(const char* buf, int len, SRT_MSGCTRL& w_mc)
             CUDT::uglobal().epoll_add_usock_INTERNAL(m_SndEID, (*b)->ps, &modes);
         }
 
-        const int blocklen = blocked.size();
-
         int            blst = 0;
         CEPoll::fmap_t sready;
 
@@ -1582,8 +1570,8 @@ int CUDTGroup::sendBroadcast(const char* buf, int len, SRT_MSGCTRL& w_mc)
                     // This must be wrapped in try-catch because on error it throws an exception.
                     // Possible return values are only 0, in case when len was passed 0, or a positive
                     // >0 value that defines the size of the data that it has sent, that is, in case
-                    // of Live mode, equal to 'blocklen'.
-                    stat = d->ps->core().sendmsg2(buf, blocklen, (w_mc));
+                    // of Live mode, equal to 'len'.
+                    stat = d->ps->core().sendmsg2(buf, len, (w_mc));
                 }
                 catch (CUDTException& e)
                 {
@@ -1605,7 +1593,7 @@ int CUDTGroup::sendBroadcast(const char* buf, int len, SRT_MSGCTRL& w_mc)
             // NOTE: m_GroupLock is continuously locked - you can safely use Sendstate::it field.
             for (vector<Sendstate>::iterator is = sendstates.begin(); is != sendstates.end(); ++is)
             {
-                if (is->stat == blocklen)
+                if (is->stat == len)
                 {
                     // Successful.
                     successful.push_back(is->mb);
@@ -3787,18 +3775,6 @@ void CUDTGroup::sendBackup_CloseBrokenSockets(SendBackupCtx& w_sendBackupCtx)
     // TODO: all broken members are to be removed from the context now???
 }
 
-struct FByOldestActive
-{
-    typedef CUDTGroup::gli_t gli_t;
-    bool operator()(gli_t a, gli_t b)
-    {
-        CUDT& x = a->ps->core();
-        CUDT& y = b->ps->core();
-
-        return x.m_tsFreshActivation < y.m_tsFreshActivation;
-    }
-};
-
 // [[using locked(this->m_GroupLock)]]
 void CUDTGroup::sendBackup_RetryWaitBlocked(SendBackupCtx&       w_sendBackupCtx,
                                             int&                 w_final_stat,
@@ -4474,7 +4450,7 @@ void CUDTGroup::ackMessage(int32_t msgno)
     m_iSndAckedMsgNo = msgno;
 }
 
-void CUDTGroup::handleKeepalive(CUDTGroup::SocketData* gli)
+void CUDTGroup::processKeepalive(CUDTGroup::SocketData* gli)
 {
     // received keepalive for that group member
     // In backup group it means that the link went IDLE.

@@ -14,9 +14,9 @@ platform:
 build_script:
   - ps: $VSIMG = $Env:APPVEYOR_BUILD_WORKER_IMAGE; $CNFG = $Env:CONFIGURATION  
   # use a few differing arguments depending on VS version to exercise different options during builds
-  - ps: if ($VSIMG -match '2019' -and $CNFG -eq "Release") { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS ON -UNIT_TESTS ON -ENABLE_SWIG ON}
+  - ps: if ($VSIMG -match '2019' -and $CNFG -eq "Release") { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS ON -UNIT_TESTS ON -BONDING ON -ENABLE_SWIG ON}
   - ps: if ($VSIMG -match '2019' -and $CNFG -eq "Debug")   { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS ON -ENABLE_SWIG ON}
-  - ps: if ($VSIMG -match '2015' -and $CNFG -eq "Release") { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS ON -UNIT_TESTS ON }
+  - ps: if ($VSIMG -match '2015' -and $CNFG -eq "Release") { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS ON -UNIT_TESTS ON -BONDING ON}
   - ps: if ($VSIMG -match '2015' -and $CNFG -eq "Debug")   { .\scripts\build-windows.ps1 -STATIC_LINK_SSL ON -BUILD_APPS OFF }
   - sh: ./scripts/build-lin-docker.ps1
 

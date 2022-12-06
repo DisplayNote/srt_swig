@@ -46,15 +46,20 @@ TEST(Bonding, SRTConnectGroup)
     }, ss);
 
     std::cout << "srt_connect_group calling " << std::endl;
-    const int st = srt_connect_group(ss, targets.data(), targets.size());
-    std::cout << "srt_connect_group returned " << st << std::endl;
+    const int st = srt_connect_group(ss, targets.data(), (int) targets.size());
+    std::cout << "srt_connect_group returned " << st << ", waiting for srt_close() to finish" << std::endl;
 
     closing_promise.wait();
+
+    std::cout << "TEST: closing future has exit. Deleting all other resources\n";
+
     // Delete config objects before prospective exception
     for (auto& gd: targets)
         srt_delete_config(gd.config);
 
     int res = srt_close(ss);
+
+    std::cout << "TEST: closing ss has exit. Cleaning up\n";
     if (res == SRT_ERROR)
     {
         std::cerr << "srt_close: " << srt_getlasterror_str() << std::endl;
@@ -264,15 +269,15 @@ TEST(Bonding, CloseGroupAndSocket)
     }
     std::cout << "Returned from connecting two sockets " << std::endl;
 
-    const int default_len = 3;
-    int rlen = default_len;
-    SRTSOCKET read[default_len];
-
-    int wlen = default_len;
-    SRTSOCKET write[default_len];
-
     for (int j = 0; j < 2; ++j)
     {
+        const int default_len = 3;
+        int rlen = default_len;
+        SRTSOCKET read[default_len];
+
+        int wlen = default_len;
+        SRTSOCKET write[default_len];
+
         const int epoll_res = srt_epoll_wait(poll_id, read, &rlen,
             write, &wlen,
             5000, /* timeout */
@@ -280,6 +285,9 @@ TEST(Bonding, CloseGroupAndSocket)
 
         std::cout << "Epoll result: " << epoll_res << '\n';
         std::cout << "Epoll rlen: " << rlen << ", wlen: " << wlen << '\n';
+        if (epoll_res < 0)
+            continue;
+
         for (int i = 0; i < rlen; ++i)
         {
             std::cout << "Epoll read[" << i << "]: " << read[i] << '\n';
