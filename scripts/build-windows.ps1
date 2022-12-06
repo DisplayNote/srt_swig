@@ -20,7 +20,7 @@ param (
     [Parameter()][String]$UNIT_TESTS = "OFF",
     [Parameter()][String]$BUILD_DIR = "_build",
     [Parameter()][String]$VCPKG_OPENSSL = "OFF",
-    [Parameter()][String]$ENABLE_SWIG = "OFF",
+    [Parameter()][String]$ENABLE_SWIG = "ON",
     [Parameter()][String]$ENABLE_SWIG_CSHARP = "ON"
 )
 
@@ -130,9 +130,16 @@ if ( $VCPKG_OPENSSL -eq "ON" ) {
 
 # check to see if SWIG is marked to be used - if so, download swig into packages folder so cmake can find it
 if ( $ENABLE_SWIG -eq "ON" ) {
-    Invoke-WebRequest 'https://deac-fra.dl.sourceforge.net/project/swig/swigwin/swigwin-4.0.2/swigwin-4.0.2.zip' -OutFile swig.zip
-    Expand-Archive swig.zip -DestinationPath $projectRoot/packages/swig
-    Remove-Item swig.zip
+    if ( Test-Path "$projectRoot/packages/swig/swigwin-4.0.2" ) {
+        Write-Output "Found pre-existing copy of Swigwin 4.0.2 - using..."
+    }
+    else {
+        Write-Output "Swigwin 4.0.2 not found - downloading and unpacking..."
+        Remove-Item -LiteralPath $projectRoot/packages/swig/ -Force -Recurse
+        Invoke-WebRequest 'https://deac-fra.dl.sourceforge.net/project/swig/swigwin/swigwin-4.0.2/swigwin-4.0.2.zip' -OutFile swig.zip
+        Expand-Archive swig.zip -DestinationPath $projectRoot/packages/swig
+        Remove-Item swig.zip
+    }
 }
 
 # build the cmake command flags from arguments
@@ -235,7 +242,7 @@ if ( $null -eq $msBuildPath ) {
 
 # if CSharp SWIG is on, now trigger compilation of these elements (cmake for dotnet is very new, and not available in older versions)
 if($ENABLE_SWIG_CSHARP){
-    Push-Location $PSScriptRoot/srtcore/swig_bindings/csharp
+    Push-Location $projectRoot/srtcore/swig_bindings/csharp
     & dotnet build -c Release
     Pop-Location
 }
