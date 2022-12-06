@@ -160,7 +160,6 @@ option(USE_BUSY_WAITING "Enable more accurate sending times at a cost of potenti
 option(USE_GNUSTL "Get c++ library/headers from the gnustl.pc" OFF)
 option(ENABLE_SOCK_CLOEXEC "Enable setting SOCK_CLOEXEC on a socket" ON)
 option(ENABLE_SHOW_PROJECT_CONFIG "Enable show Project Configuration" OFF)
-option(ENABLE_NEW_RCVBUFFER "Enable new receiver buffer implementation" ON)
 option(ENABLE_SWIG "Enable SWIG, used to generate alternative language bindings" OFF)
 option(ENABLE_SWIG_CSHARP "Enable SWIG binding generation for CSharp language (only effective if ENABLE_SWIG is ON)" ON)
 
@@ -533,14 +532,6 @@ message(STATUS "MONOTONIC_CLOCK: ${ENABLE_MONOTONIC_CLOCK}")
 
 if (ENABLE_SOCK_CLOEXEC)
 	add_definitions(-DENABLE_SOCK_CLOEXEC=1)
-endif()
-
-if (ENABLE_NEW_RCVBUFFER)
-	add_definitions(-DENABLE_NEW_RCVBUFFER=1)
-	message(STATUS "RECEIVER_BUFFER: NEW")
-else()
-	remove_definitions(-DENABLE_NEW_RCVBUFFER)
-	message(STATUS "RECEIVER_BUFFER: OLD")
 endif()
 
 if (CMAKE_MAJOR_VERSION LESS 3)
@@ -1124,7 +1115,7 @@ endif()
 # obtained by `pkg-config --libs`.
 if(ENABLE_CXX_DEPS)
 	foreach(LIB ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
-		if(IS_ABSOLUTE ${LIB} AND EXISTS ${LIB})
+		if((IS_ABSOLUTE ${LIB} AND EXISTS ${LIB}) OR (${LIB} MATCHES "^-l"))
 			set(SRT_LIBS_PRIVATE ${SRT_LIBS_PRIVATE} ${LIB})
 		else()
 			set(SRT_LIBS_PRIVATE ${SRT_LIBS_PRIVATE} "-l${LIB}")
@@ -1393,7 +1384,13 @@ if (ENABLE_UNITTESTS AND ENABLE_CXX11)
 
 	set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-	find_package(GTest 1.8)
+	# Version ranges are only supported with CMake 3.19 or later.
+	# Need GTest v1.10 or higher to support GTEST_SKIP.
+	if (${CMAKE_VERSION} VERSION_LESS "3.19.0")
+		find_package(GTest 1.10)
+	else()
+		find_package(GTest 1.10...1.12)
+	endif()
 	if (NOT GTEST_FOUND)
 		message(STATUS "GTEST not found! Fetching from git.")
 		include(googletest)
