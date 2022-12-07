@@ -16,13 +16,17 @@
 	</metadata>
 
 	<files>
-		<file src="..\..\..\package\bin\srt_swig_csharp.dll" target="runtimes\win-x64\native\release"/>
+		<file src="..\..\..\package\extracted\bin\srt_swig_csharp.dll" target="runtimes\win-x64\native\release"/>
+		<file src="..\..\..\package\extracted\Release.linux\libsrt.so" target="runtimes\linux-x64\native\release"/>
 		
-		<file src="..\..\..\package\swig_bindings\csharp\bin\Release\netstandard2.0\srtsharp.dll" target="lib\netstandard2.0" /> 
+		<file src="..\..\..\package\extracted\bin\srtsharp.dll" target="lib\netstandard2.0" /> 
+ 
+		<file src="..\..\..\_build\version.h" target="sources"/>
+		<file src="..\..\..\srtcore\*.h" target="sources"/>
+		<file src="..\..\..\haicrypt\*.h" target="sources"/>
+		<file src="..\..\..\common\**\*.h" target="sources"/>
 
-		<file src="..\..\..\package\include\**\*.*" target="sources"/>
-
-		<file src="..\..\..\package\swig_bindings\**\*.*" target="bindings" exclude="**\*.dll"/>
+		<!-- <file src="..\..\..\_build\swig_bindings\**\*.*" target="bindings" exclude="**\*.dll"/>  -->
 
 		<file src="build\*" target="build" />
 	</files>

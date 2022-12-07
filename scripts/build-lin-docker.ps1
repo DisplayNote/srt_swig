@@ -18,7 +18,8 @@ param (
     [Parameter()][String]$BUILD_APPS = "ON",
     [Parameter()][String]$UNIT_TESTS = "OFF",
     [Parameter()][String]$BUILD_DIR = "_build-linux",
-    [Parameter()][String]$ENABLE_SWIG = "OFF",
+    [Parameter()][String]$BONDING = "ON",
+    [Parameter()][String]$ENABLE_SWIG = "ON",
     [Parameter()][String]$ENABLE_SWIG_CSHARP = "ON"
 )
 
@@ -41,6 +42,7 @@ $cmakeFlags = "-DCMAKE_BUILD_TYPE=$CONFIGURATION " +
                 "-DENABLE_APPS=$BUILD_APPS " + 
                 "-DENABLE_ENCRYPTION=$ENABLE_ENCRYPTION " +
                 "-DENABLE_UNITTESTS=$UNIT_TESTS " +
+                "-DENABLE_BONDING=$BONDING " + 
                 "-DENABLE_SWIG=$ENABLE_SWIG " +
                 "-DENABLE_SWIG_CSHARP=$ENABLE_SWIG_CSHARP"
 
