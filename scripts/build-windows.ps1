@@ -56,9 +56,11 @@ if ( $Env:APPVEYOR ) {
     Copy-Item -Path "C:\OpenSSL-v111-Win64" "C:\OpenSSL-Win64" -Recurse | Out-Null
 }
 
-# if running within TeamCity, force SWIG to ON (to avoid changing default behaviour on pre-existing CI systems)
+# if running within TeamCity, force SWIG and BONDING to ON (to avoid changing default behaviour on pre-existing CI systems)
+# this should be removable ones master branch is merged to always have these params available (so CI can set them reliably itself)
 if($Env:TEAMCITY_VERSION){
     $ENABLE_SWIG = "ON"
+    $BONDING = "ON"
 }
 
 # persist VS_VERSION so it can be used in an artifact name later
