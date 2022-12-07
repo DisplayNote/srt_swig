@@ -56,6 +56,11 @@ if ( $Env:APPVEYOR ) {
     Copy-Item -Path "C:\OpenSSL-v111-Win64" "C:\OpenSSL-Win64" -Recurse | Out-Null
 }
 
+# if running within TeamCity, force SWIG to ON (to avoid changing default behaviour on pre-existing CI systems)
+if($Env:TEAMCITY_VERSION){
+    $ENABLE_SWIG = "ON"
+}
+
 # persist VS_VERSION so it can be used in an artifact name later
 $Env:VS_VERSION = $VS_VERSION
 
