@@ -21,10 +21,7 @@
 		
 		<file src="..\..\..\package\extracted\bin\srtsharp.dll" target="lib\netstandard2.0" /> 
  
-		<file src="..\..\..\_build\version.h" target="sources"/>
-		<file src="..\..\..\srtcore\*.h" target="sources"/>
-		<file src="..\..\..\haicrypt\*.h" target="sources"/>
-		<file src="..\..\..\common\**\*.h" target="sources"/>
+		<file src="..\..\..\package\extracted\include\**\*.h" target="sources"/>
 
 		<!-- <file src="..\..\..\_build\swig_bindings\**\*.*" target="bindings" exclude="**\*.dll"/>  -->
 

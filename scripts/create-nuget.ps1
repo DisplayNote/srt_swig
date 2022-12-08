@@ -17,7 +17,7 @@ $ErrorActionPreference = "Stop"
 $packageDir = Join-Path $PSScriptRoot "../" $PACKAGEFOLDER -Resolve
 
 Get-ChildItem $packageDir -Filter *.zip | Foreach-Object {
-   #Expand-Archive -Force -Path $_.FullName -DestinationPath $(Join-Path $packageDir "extracted")
+   Expand-Archive -Force -Path $_.FullName -DestinationPath $(Join-Path $packageDir "extracted")
 }
 
 nuget pack .\nuget\SrtSharp\SrtSharp.nuspec -version $VERSION
