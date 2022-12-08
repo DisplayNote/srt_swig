@@ -1363,6 +1363,10 @@ if(ENABLE_SWIG)
 	
 	FIND_PACKAGE(SWIG REQUIRED)
 	INCLUDE(${SWIG_USE_FILE})
+	
+	if(UNIX AND NOT APPLE)
+		list(APPEND CMAKE_SWIG_FLAGS "-DSWIGWORDSIZE64")
+	endif()
 
 	if(ENABLE_SWIG_CSHARP)
 		swig_add_library(srt_swig_csharp LANGUAGE csharp SOURCES srtcore/srt.i OUTPUT_DIR ${CMAKE_BINARY_DIR}/swig_bindings/csharp)
