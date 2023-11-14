@@ -43,10 +43,21 @@ export PATH=$ANDROID_NDK/toolchains/llvm/prebuilt/$HOST_TAG/bin:$PATH
 
 ##### build-function #####
 build_the_thing() {
+
+    #https://github.com/openssl/openssl/issues/20854
+ # in openssl 3.0 > SHLIB_EXT is deleted
+ : '
     make clean
-    ./Configure $SSL_TARGET -D__ANDROID_API__=$API_LEVEL && \
+    ./configure $SSL_TARGET -D__ANDROID_API__=$API_LEVEL && \
     make SHLIB_EXT=.so && \
     make install SHLIB_EXT=.so DESTDIR=$DESTDIR || exit 128
+' 
+
+    OPENSSLPATH= openssl-${OPENSSL_VERSION}
+    make clean
+    ./configure $SSL_TARGET -D__ANDROID_API__=$API_LEVEL && \
+    make && \
+    make install  DESTDIR=$DESTDIR || exit 128
 }
 
 ##### set variables according to build-tagret #####

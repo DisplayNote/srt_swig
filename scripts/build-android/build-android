@@ -23,6 +23,11 @@ OPENSSL_VERSION=1.1.1l
 ENC_LIB=openssl
 MBEDTLS_VERSION=v2.26.0
 
+# Export OpenSSL paths with the following commands:
+export OPENSSL_ROOT_DIR= /usr/bin/openssl
+export OPENSSL_LIB_DIR= /usr/lib/ssl
+export OPENSSL_INCLUDE_DIR= /usr/include/openssl
+
 while getopts n:a:t:o:s:e:m: option
 do
  case "${option}"
@@ -108,4 +113,29 @@ for build_target in $BUILD_TARGETS; do
  git -C $REPO_DIR clean -fd -e scripts
  $SCRIPT_DIR/mksrt -n $NDK_ROOT -a $API_LEVEL -t $build_target -e $ENC_LIB -s $REPO_DIR -i $BASE_DIR/$build_target
  cp $LIB_DIR/libsrt.so $JNI_DIR/libsrt.so
+
+ # if CSharp SWIG is on, now trigger compilation of these elements (cmake for dotnet is very new, and not available in older versions)
+ : '
+if(($ENABLE_SWIG -eq "ON") -and ($ENABLE_SWIG_CSHARP -eq "ON")){
+    Push-Location "$buildDir/swig_bindings/csharp"
+    Copy-Item "$projectRoot/srtcore/swig_bindings/csharp/*.csproj" .
+    & dotnet build -c Release
+    Copy-Item "bin/$CONFIGURATION/netstandard2.0/*.dll" "$buildDir/$CONFIGURATION"
+    Pop-Location
+}
+'
+if [ 1 = 1 ]; then
+ #  	cp /home/enaut/cinegysrt/srt/srtcore/swig_bindings/csharp/*.csproj .
+  # 	dotnet build -c Release
+   #	cp bin/Release/netstandard2.0/*.dll $LIB_DIR/Release
+
+   pushd /home/enaut/cinegysrt/srt/swig_bindings/csharp/
+   cp /home/enaut/cinegysrt/srt/srtcore/swig_bindings/csharp/*.csproj .
+   # dotnet build -c Release -o $LIB_DIR/Release
+   dotnet build -c Release
+   #No sé si es suficiente con el output path
+   cp -r bin/Release/netstandard2.0/*.dll $LIB_DIR/Release
+   popd
+ fi
+
 done
