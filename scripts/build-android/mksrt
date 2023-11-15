@@ -27,6 +27,8 @@ cd $SRC_DIR
 --CMAKE_SYSTEM_NAME=Android --CMAKE_SYSTEM_VERSION=$API_LEVEL --CMAKE_ANDROID_ARCH_ABI=$ARCH_ABI \
 --CMAKE_C_FLAGS="-fPIC" --CMAKE_SHARED_LINKER_FLAGS="-Wl,--build-id" \
 --enable-c++11 --enable-stdcxx-sync \
---enable-debug=2 --enable-logging=0 --enable-heavy-logging=0 --enable-apps=0
+--enable-debug=2 --enable-logging=0 --enable-heavy-logging=0 --enable-apps=0 \
+--ENABLE_SWIG_CSHARP=ON \
+--ENABLE_SWIG=ON
 make
 make install
