@@ -53,11 +53,11 @@ build_the_thing() {
     make install SHLIB_EXT=.so DESTDIR=$DESTDIR || exit 128
 ' 
 
-    #OPENSSLPATH= openssl-${OPENSSL_VERSION}
+    OPENSSLPATH= openssl-${OPENSSL_VERSION}
     make clean
-    ./Configure $SSL_TARGET -D__ANDROID_API__=$API_LEVEL && \
-    make SHLIB_EXT=.so && \
-    make install SHLIB_EXT=.so DESTDIR=$DESTDIR || exit 128
+    ./configure $SSL_TARGET -D__ANDROID_API__=$API_LEVEL && \
+    make && \
+    make install  DESTDIR=$DESTDIR || exit 128
 }
 
 ##### set variables according to build-tagret #####

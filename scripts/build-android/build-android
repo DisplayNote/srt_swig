@@ -24,9 +24,9 @@ ENC_LIB=openssl
 MBEDTLS_VERSION=v2.26.0
 
 # Export OpenSSL paths with the following commands:
-# export OPENSSL_ROOT_DIR= /usr/bin/openssl
-# export OPENSSL_LIB_DIR= /usr/lib/ssl
-# export OPENSSL_INCLUDE_DIR= /usr/include/openssl
+export OPENSSL_ROOT_DIR= /usr/bin/openssl
+export OPENSSL_LIB_DIR= /usr/lib/ssl
+export OPENSSL_INCLUDE_DIR= /usr/include/openssl
 
 while getopts n:a:t:o:s:e:m: option
 do
@@ -125,8 +125,12 @@ if(($ENABLE_SWIG -eq "ON") -and ($ENABLE_SWIG_CSHARP -eq "ON")){
 }
 '
 if [ 1 = 1 ]; then
-   pushd /home/enaut/dev/srt_swig/swig_bindings/csharp/
-   cp /home/enaut/dev/srt_swig/srtcore/swig_bindings/csharp/*.csproj .
+ #  	cp /home/enaut/cinegysrt/srt/srtcore/swig_bindings/csharp/*.csproj .
+  # 	dotnet build -c Release
+   #	cp bin/Release/netstandard2.0/*.dll $LIB_DIR/Release
+
+   pushd /home/enaut/cinegysrt/srt/swig_bindings/csharp/
+   cp /home/enaut/cinegysrt/srt/srtcore/swig_bindings/csharp/*.csproj .
    # dotnet build -c Release -o $LIB_DIR/Release
    dotnet build -c Release
    #No sé si es suficiente con el output path
