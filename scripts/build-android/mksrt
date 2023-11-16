@@ -14,6 +14,15 @@ do
  esac
 done
 
+if [ $ARCH_ABI = 'armeabi-v7a' ]; then
+  _32BITS=ON
+elif [ $ARCH_ABI = 'arm64-v8a' ]; then
+  _32BITS=OFF
+elif [ $ARCH_ABI = 'x86' ]; then
+  _32BITS=ON
+elif [ $ARCH_ABI = 'x86_64' ]; then
+  _32BITS=OFF
+fi
 
 cd $SRC_DIR
 ./configure --use-enclib=$ENC_LIB \
@@ -29,6 +38,7 @@ cd $SRC_DIR
 --enable-c++11 --enable-stdcxx-sync \
 --enable-debug=2 --enable-logging=0 --enable-heavy-logging=0 --enable-apps=0 \
 --ENABLE_SWIG_CSHARP=ON \
---ENABLE_SWIG=ON
+--ENABLE_SWIG=ON \
+--ENABLE_SWIG_32BITS=$_32BITS
 make
 make install

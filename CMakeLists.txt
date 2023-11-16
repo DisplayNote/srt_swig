@@ -167,7 +167,7 @@ option(ENABLE_SOCK_CLOEXEC "Enable setting SOCK_CLOEXEC on a socket" ON)
 option(ENABLE_SHOW_PROJECT_CONFIG "Enable show Project Configuration" OFF)
 option(ENABLE_SWIG "Enable SWIG, used to generate alternative language bindings" OFF)
 option(ENABLE_SWIG_CSHARP "Enable SWIG binding generation for CSharp language (only effective if ENABLE_SWIG is ON)" ON)
-
+option(ENABLE_SWIG_32BITS "Add the CMAKE_SWIG_FLAGS -DSWIGWORDSIZE32" OFF)
 option(ENABLE_CLANG_TSA "Enable Clang Thread Safety Analysis" OFF)
 
 # NOTE: Use ATOMIC_USE_SRT_SYNC_MUTEX and will override the auto-detection of the
@@ -1426,7 +1426,9 @@ if(ENABLE_SWIG)
 	FIND_PACKAGE(SWIG REQUIRED)
 	INCLUDE(${SWIG_USE_FILE})
 	
-	if(UNIX AND NOT APPLE)
+	if(ENABLE_SWIG_32BITS)
+		list(APPEND CMAKE_SWIG_FLAGS "-DSWIGWORDSIZE32")
+	elseif(UNIX AND NOT APPLE)
 		list(APPEND CMAKE_SWIG_FLAGS "-DSWIGWORDSIZE64")
 	endif()
 
