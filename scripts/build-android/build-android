@@ -108,6 +108,7 @@ for build_target in $BUILD_TARGETS; do
  git -C $REPO_DIR clean -fd -e scripts
  $SCRIPT_DIR/mksrt -n $NDK_ROOT -a $API_LEVEL -t $build_target -e $ENC_LIB -s $REPO_DIR -i $BASE_DIR/$build_target
  cp $LIB_DIR/libsrt.so $JNI_DIR/libsrt.so
+ cp $REPO_DIR/libsrt_swig_csharp.so $BASE_DIR/$build_target
 
  cd $BASE_DIR/$REPO_DIR/swig_bindings/csharp
  cp $BASE_DIR/$REPO_DIR/srtcore/swig_bindings/csharp/*.csproj .
