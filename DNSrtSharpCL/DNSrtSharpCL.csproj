@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	  <RuntimeIdentifiers>win-x64;android-x86;android-x64;android-arm;android-arm64</RuntimeIdentifiers>
+    <ImplicitUsings>enable</ImplicitUsings>
+	  <LangVersion>10.0</LangVersion>
+	  <Nullable>enable</Nullable>
+	  <PackageReadmeFile>readme.md</PackageReadmeFile>
+	  <Platforms>AnyCPU;x64;x86</Platforms>
+	  <PackageId>DnSrtSharp</PackageId>
+	  <Title>SRT Library wrapped for C# made by DisplayNote Technologies Ltd</Title>
+	  <Authors>DisplayNote Technologies Ltd</Authors>
+	  <Company>DisplayNote Technologies Ltd</Company>
+	  <Description>Secure, Reliable Transport Library with C# bindings, published by DisplayNote Technologies Ltd</Description>
+	  <Copyright>2019 SRT Haivision Systems Inc (Packaged by DisplayNote Technologies Ltd). All rights reserved.</Copyright>
+	  <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
+  </PropertyGroup>
+
+	<!--https://devblogs.microsoft.com/nuget/add-a-readme-to-your-nuget-package/ -->
+	<ItemGroup>
+		<None Include="docs\readme.md" pack="true" PackagePath="\" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Content Include="sources\**\*.h">
+			<Pack>true</Pack>
+			<PackagePath>sources</PackagePath>
+		</Content>
+
+		<Content Include="runtimes\**\*">
+			<Pack>true</Pack>
+			<PackagePath>runtimes</PackagePath>
+		</Content>
+
+		<Content Include="build\**\*">
+			<Pack>true</Pack>
+			<PackagePath>build</PackagePath>
+		</Content>
+
+		<Content Include="lib\**\*">
+			<Pack>true</Pack>
+			<PackagePath>lib</PackagePath>
+		</Content>
+	</ItemGroup>
+</Project>
