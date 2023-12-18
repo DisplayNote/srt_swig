@@ -15,6 +15,10 @@
 	  <Description>Secure, Reliable Transport Library with C# bindings, published by DisplayNote Technologies Ltd</Description>
 	  <Copyright>2019 SRT Haivision Systems Inc (Packaged by DisplayNote Technologies Ltd). All rights reserved.</Copyright>
 	  <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
+	  <Version>1.0.1</Version>
+	  <!--TODO: Do NOT forget to update Current version in readme.md file -->
+	  <PackageVersion>$(Version)</PackageVersion>
+	  <NuspecProperties>version=$(Version)</NuspecProperties>
   </PropertyGroup>
 
 	<!--https://devblogs.microsoft.com/nuget/add-a-readme-to-your-nuget-package/ -->
