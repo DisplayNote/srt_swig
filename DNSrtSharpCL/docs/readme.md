@@ -26,6 +26,7 @@ ref folder to provide compile time assembly. within sub-folders named
 ```
 And include previously gathered files from running required platform scripts.
 2.- Add C++ srt header files in sources folder.
+(Make sure overwriting any header file in sources folder if changes in srt_swig header files)
 
 3.- Configure .csproj, .props, .targets and .nuspec files.
 
