@@ -13,15 +13,15 @@ param (
     [Parameter()][String]$VS_VERSION = "2022",
     [Parameter()][String]$CONFIGURATION = "Release",
     [Parameter()][String]$DEVENV_PLATFORM = "x64",
-    [Parameter()][String]$ENABLE_ENCRYPTION = "OFF",
+    [Parameter()][String]$ENABLE_ENCRYPTION = "ON",
     [Parameter()][String]$STATIC_LINK_SSL = "OFF",
     [Parameter()][String]$CXX11 = "ON",
     [Parameter()][String]$BUILD_APPS = "ON",
     [Parameter()][String]$UNIT_TESTS = "OFF",
     [Parameter()][String]$BUILD_DIR = "_build",
-    [Parameter()][String]$VCPKG_OPENSSL = "OFF",
+    [Parameter()][String]$VCPKG_OPENSSL = "ON",
     [Parameter()][String]$BONDING = "OFF",
-    [Parameter()][String]$ENABLE_SWIG = "OFF",
+    [Parameter()][String]$ENABLE_SWIG = "ON",
     [Parameter()][String]$ENABLE_SWIG_CSHARP = "ON"
 )
 
@@ -88,9 +88,8 @@ if ( $null -eq (Get-Command "cmake.exe" -ErrorAction SilentlyContinue) ) {
         # download cmake and run MSI for user
         $client = New-Object System.Net.WebClient        
         $tempDownloadFile = New-TemporaryFile
-        
-        $cmakeUrl = "https://github.com/Kitware/CMake/releases/download/v$cmakeVersion/cmake-$cmakeVersion-win64-x64.msi"
-        $cmakeMsiFile = "$tempDownloadFile.cmake-$cmakeVersion-win64-x64.msi"
+        $cmakeUrl = "https://github.com/Kitware/CMake/releases/download/v$cmakeVersion/cmake-$cmakeVersion-windows-x86_64.msi"
+        $cmakeMsiFile = "$tempDownloadFile.cmake-$cmakeVersion-windows-x86_64.msi"
         Write-Output "Downloading cmake from $cmakeUrl (temporary file location $cmakeMsiFile)"
         Write-Output "Note: select the option to add cmake to path for this script to operate"
         $client.DownloadFile("$cmakeUrl", "$cmakeMsiFile")
