@@ -17,13 +17,13 @@
 	<files>		
 		<!-- MUST follow structure: https://learn.microsoft.com/en-us/nuget/create-packages/supporting-multiple-target-frameworks#architecture-specific-folders -->
 		<!-- android-arm -->
-		<file src="runtimes\android-arm32\native\libsrt_swig_csharp.so" target="runtimes\android-arm32\native" installPath="runtimes\android-arm32\native\libsrt_swig_csharp.so"/>
+		<file src="runtimes\android-arm32\native\libsrt_swig_csharp.so" target="runtimes\android-arm32\native" installPath="runtimes\android-arm32\native\srt_swig_csharp.so"/>
 		<!-- android-arm64 -->
-		<file src="runtimes\android-arm64\native\libsrt_swig_csharp.so" target="runtimes\android-arm64\native" installPath="runtimes\android-arm64\native\libsrt_swig_csharp.so"/>
+		<file src="runtimes\android-arm64\native\libsrt_swig_csharp.so" target="runtimes\android-arm64\native" installPath="runtimes\android-arm64\native\srt_swig_csharp.so"/>
 		<!-- android-x64 -->
-		<file src="runtimes\android-x64\native\libsrt_swig_csharp.so" target="runtimes\android-x64\native" installPath="runtimes\android-x64\native\libsrt_swig_csharp.so"/>
+		<file src="runtimes\android-x64\native\libsrt_swig_csharp.so" target="runtimes\android-x64\native" installPath="runtimes\android-x64\native\srt_swig_csharp.so"/>
 		<!-- android-x86 -->
-		<file src="runtimes\android-x86\native\libsrt_swig_csharp.so" target="runtimes\android-x86\native" installPath="runtimes\android-x86\native\libsrt_swig_csharp.so"/>
+		<file src="runtimes\android-x86\native\libsrt_swig_csharp.so" target="runtimes\android-x86\native" installPath="runtimes\android-x86\native\srt_swig_csharp.so"/>
 		<!-- win-x64 -->
 		<file src="runtimes\win-x64\native\srt_swig_csharp.dll" target="runtimes\win-x64\native" installPath="runtimes\win-x64\native\srt_swig_csharp.dll"/>
 		

@@ -3,7 +3,7 @@
 
 Class library to create custom srtsharp nuget package:
 
-* Current version: v1.0.6
+* Current version: v1.0.7
 * Based on: https://www.nuget.org/packages/SrtSharp/*
 
 ## Prerequisites:
