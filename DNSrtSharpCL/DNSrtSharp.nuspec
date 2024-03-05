@@ -17,7 +17,7 @@
 	<files>		
 		<!-- MUST follow structure: https://learn.microsoft.com/en-us/nuget/create-packages/supporting-multiple-target-frameworks#architecture-specific-folders -->
 		<!-- android-arm -->
-		<file src="runtimes\android-arm32\native\libsrt_swig_csharp.so" target="runtimes\android-arm32\native" installPath="runtimes\android-arm32\native\libsrt_swig_csharp.so"/>
+		<file src="runtimes\android-arm\native\libsrt_swig_csharp.so" target="runtimes\android-arm\native" installPath="runtimes\android-arm\native\libsrt_swig_csharp.so"/>
 		<!-- android-arm64 -->
 		<file src="runtimes\android-arm64\native\libsrt_swig_csharp.so" target="runtimes\android-arm64\native" installPath="runtimes\android-arm64\native\libsrt_swig_csharp.so"/>
 		<!-- android-x64 -->
